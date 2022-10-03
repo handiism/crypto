@@ -11,8 +11,8 @@ import (
 
 func main() {
 	app := fiber.New()
-	app.Post("/encipher", Enchiper())
-	app.Post("/decipher", Dechiper())
+	app.Post("/encipher", Encipher())
+	app.Post("/decipher", Decipher())
 	app.Static("/", "./view")
 	log.Fatal(app.Listen(":8000"))
 }
@@ -20,7 +20,7 @@ func main() {
 type Request struct {
 	Algorithm  string `json:"algorithm"`
 	Plaintext  string `json:"plaintext,omitempty"`
-	Chipertext string `json:"cipHertext,omitempty"`
+	Ciphertext string `json:"ciphertext,omitempty"`
 	Key        Key    `json:"key"`
 }
 
@@ -33,110 +33,100 @@ type Key struct {
 	Text    string `json:"text,omitempty"`
 }
 
-func Enchiper() fiber.Handler {
+func Encipher() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		body := c.Request().Body()
 		var request Request
 		if err := json.Unmarshal(body, &request); err != nil {
 			c.Status(http.StatusBadRequest)
-			return c.JSON(Response{Status: "failed", Data: fiber.Map{"message": err.Error()}})
+			return c.JSON(Response{Status: "fail", Data: fiber.Map{"message": err.Error()}})
 		}
 
 		if request.Algorithm == "affine" {
 			affine, err := algorithm.NewAffine(request.Key.Numbers[0], request.Key.Numbers[1])
 			if err != nil {
 				c.Status(http.StatusUnprocessableEntity)
-				return c.JSON(Response{Status: "failed", Data: fiber.Map{"message": err.Error()}})
+				return c.JSON(Response{Status: "fail", Data: fiber.Map{"message": err.Error()}})
 			}
-			chiper := affine.Encipher(request.Plaintext)
-			return c.JSON(Response{Status: "success", Data: fiber.Map{"ciphertext": chiper}})
+			cipher := affine.Encipher(request.Plaintext)
+			return c.JSON(Response{Status: "success", Data: fiber.Map{"ciphertext": cipher}})
 		} else if request.Algorithm == "caesar" {
 			caesar := algorithm.NewCaesar(request.Key.Numbers[0])
-			chiper := caesar.Encipher(request.Plaintext)
-			return c.JSON(Response{Status: "success", Data: fiber.Map{"ciphertext": chiper}})
-		} else if request.Algorithm == "railfence" {
-			railfence, err := algorithm.NewRailfence(request.Key.Numbers[0])
+			cipher := caesar.Encipher(request.Plaintext)
+			return c.JSON(Response{Status: "success", Data: fiber.Map{"ciphertext": cipher}})
+		} else if request.Algorithm == "otp" {
+			otp := algorithm.NewOTP(request.Key.Text)
+			cipher, err := otp.Encrypt(request.Plaintext)
 			if err != nil {
 				c.Status(http.StatusUnprocessableEntity)
-				return c.JSON(Response{Status: "failed", Data: fiber.Map{"message": err.Error()}})
+				return c.JSON(Response{Status: "fail", Data: fiber.Map{"message": err.Error()}})
 			}
 
-			chiper, err := railfence.Encipher(request.Plaintext)
-			if err != nil {
-				c.Status(http.StatusUnprocessableEntity)
-				return c.JSON(Response{Status: "failed", Data: fiber.Map{"message": err.Error()}})
-			}
-
-			return c.JSON(Response{Status: "success", Data: fiber.Map{"ciphertext": chiper}})
+			return c.JSON(Response{Status: "success", Data: fiber.Map{"ciphertext": cipher}})
 		} else if request.Algorithm == "super" {
-			super, err := algorithm.NewSuper(request.Key.Numbers[0], request.Key.Numbers[1])
+			super, err := algorithm.NewSuper(request.Key.Numbers[0], request.Key.Numbers[1], request.Key.Text)
 			if err != nil {
 				c.Status(http.StatusUnprocessableEntity)
-				return c.JSON(Response{Status: "failed", Data: fiber.Map{"message": err.Error()}})
+				return c.JSON(Response{Status: "fail", Data: fiber.Map{"message": err.Error()}})
 			}
-			chiper, err := super.Encipher(request.Plaintext)
+			cipher, err := super.Encipher(request.Plaintext)
 			if err != nil {
 				c.Status(http.StatusUnprocessableEntity)
-				return c.JSON(Response{Status: "failed", Data: fiber.Map{"message": err.Error()}})
+				return c.JSON(Response{Status: "fail", Data: fiber.Map{"message": err.Error()}})
 			}
-			return c.JSON(Response{Status: "success", Data: fiber.Map{"ciphertext": chiper}})
+			return c.JSON(Response{Status: "success", Data: fiber.Map{"ciphertext": cipher}})
 		}
 
 		c.Status(http.StatusUnprocessableEntity)
-		return c.JSON(Response{Status: "failed", Data: fiber.Map{"message": "unknown algorithm"}})
+		return c.JSON(Response{Status: "fail", Data: fiber.Map{"message": "unknown algorithm"}})
 	}
 }
 
-func Dechiper() fiber.Handler {
+func Decipher() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		body := c.Request().Body()
 		var request Request
 		if err := json.Unmarshal(body, &request); err != nil {
 			c.Status(http.StatusBadRequest)
-			return c.JSON(Response{Status: "failed", Data: fiber.Map{"message": err.Error()}})
+			return c.JSON(Response{Status: "fail", Data: fiber.Map{"message": err.Error()}})
 		}
 
 		if request.Algorithm == "affine" {
 			affine, err := algorithm.NewAffine(request.Key.Numbers[0], request.Key.Numbers[1])
 			if err != nil {
 				c.Status(http.StatusUnprocessableEntity)
-				return c.JSON(Response{Status: "failed", Data: fiber.Map{"message": err.Error()}})
+				return c.JSON(Response{Status: "fail", Data: fiber.Map{"message": err.Error()}})
 			}
-			plain := affine.Decipher(request.Chipertext)
+			plain := affine.Decipher(request.Ciphertext)
 			return c.JSON(Response{Status: "success", Data: fiber.Map{"plaintext": plain}})
 		} else if request.Algorithm == "caesar" {
 			caesar := algorithm.NewCaesar(request.Key.Numbers[0])
-			plain := caesar.Decipher(request.Chipertext)
+			plain := caesar.Decipher(request.Ciphertext)
 			return c.JSON(Response{Status: "success", Data: fiber.Map{"plaintext": plain}})
-		} else if request.Algorithm == "railfence" {
-			railfence, err := algorithm.NewRailfence(request.Key.Numbers[0])
+		} else if request.Algorithm == "otp" {
+			otp := algorithm.NewOTP(request.Key.Text)
+			plain, err := otp.Decrypt(request.Ciphertext)
 			if err != nil {
 				c.Status(http.StatusUnprocessableEntity)
-				return c.JSON(Response{Status: "failed", Data: fiber.Map{"message": err.Error()}})
-			}
-
-			plain, err := railfence.Decipher(request.Chipertext)
-			if err != nil {
-				c.Status(http.StatusUnprocessableEntity)
-				return c.JSON(Response{Status: "failed", Data: fiber.Map{"message": err.Error()}})
+				return c.JSON(Response{Status: "fail", Data: fiber.Map{"message": err.Error()}})
 			}
 
 			return c.JSON(Response{Status: "success", Data: fiber.Map{"plaintext": plain}})
 		} else if request.Algorithm == "super" {
-			super, err := algorithm.NewSuper(request.Key.Numbers[0], request.Key.Numbers[1])
+			super, err := algorithm.NewSuper(request.Key.Numbers[0], request.Key.Numbers[1], request.Key.Text)
 			if err != nil {
 				c.Status(http.StatusUnprocessableEntity)
-				return c.JSON(Response{Status: "failed", Data: fiber.Map{"message": err.Error()}})
+				return c.JSON(Response{Status: "fail", Data: fiber.Map{"message": err.Error()}})
 			}
-			plain, err := super.Decipher(request.Chipertext)
+			plain, err := super.Decipher(request.Ciphertext)
 			if err != nil {
 				c.Status(http.StatusUnprocessableEntity)
-				return c.JSON(Response{Status: "failed", Data: fiber.Map{"message": err.Error()}})
+				return c.JSON(Response{Status: "fail", Data: fiber.Map{"message": err.Error()}})
 			}
 			return c.JSON(Response{Status: "success", Data: fiber.Map{"plaintext": plain}})
 		}
 
 		c.Status(http.StatusUnprocessableEntity)
-		return c.JSON(Response{Status: "failed", Data: fiber.Map{"message": "unknown algorithm"}})
+		return c.JSON(Response{Status: "fail", Data: fiber.Map{"message": "unknown algorithm"}})
 	}
 }

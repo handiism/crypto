@@ -1,11 +1,10 @@
 package algorithm
 
 import (
-	"regexp"
-
 	"github.com/handiism/crypto/mod"
 )
 
+// mapAlpha returns the shifted text for defined callback function
 func mapAlpha(text string, f func(i, char int) int) string {
 	runes := []rune(text)
 	for i, char := range runes {
@@ -18,12 +17,12 @@ func mapAlpha(text string, f func(i, char int) int) string {
 	return string(runes)
 }
 
-// RemovePunctuation removes any non alphabetic chars from a string.
-func RemovePunctuation(text string) string {
-	return replacePattern(text, "[^A-Za-z]", "")
-}
-
-// replacePattern replaces any matches to a Regular Expression in a string.
-func replacePattern(text, pattern, replace string) string {
-	return regexp.MustCompile(pattern).ReplaceAllString(text, replace)
+// alphaIndex returns the number 0-25 corresponding to the letter
+func alphaIndex(char rune) int {
+	if char >= 'A' && char <= 'Z' {
+		return int(char - 'A')
+	} else if char >= 'a' && char <= 'z' {
+		return int(char - 'a')
+	}
+	return -1
 }

@@ -1,39 +1,39 @@
 <html>
-  <link rel="stylesheet" href="style.css" />
-  <head> </head>
-  <body>
-    <div class="title">CRYPTOGRAPHY</div>
-    <div class="navbar">
-      <div class="navbut">
-        <input type="Hidden" id="choice" value="affine" />
-        <button onclick="affine()">Affine</button>
-        <button onclick="caesar()">Caesar</button>
-        <button onclick="railfence()">Railfence</button>
-        <button onclick="superEncryption()">Super Encryption</button>
-      </div>
-      <div id="choicet">Current choice is Affine Chiper algorithm</div>
+<link rel="stylesheet" href="style.css" />
+<head> </head>
+<body>
+  <div class="title">CRYPTOGRAPHY</div>
+  <div class="navbar">
+    <div class="navbut">
+      <input type="Hidden" id="choice" value="affine" />
+      <button onclick="affine()">Affine</button>
+      <button onclick="caesar()">Caesar</button>
+      <button onclick="otp()">One Time Pad</button>
+      <button onclick="superEncryption()">Super Encryption</button>
     </div>
-    <div class="inputArea">
-      <div class="textInput">
-        <div class="text">
-          <div>Plaintext/Chipertext</div>
-          <textarea id="plaintext"></textarea>
-          <div id="keyLabelNumberOne">Key A</div>
-          <input id="keyNumberOne" type="number" />
-          <div id="keyLabelNumberTwo">Key B</div>
-          <input id="keyNumberTwo" type="number" />
-          <div id="keyLabelText" hidden>Key</div>
-          <input id="keyText" type="text" hidden />
-          <div class="buttons">
-            <button onclick="encipher()">Encrypt</button>
-            <button onclick="decipher()">Decyprt</button>
-          </div>
+    <div id="choicet">Current choice is Affine Cipher algorithm</div>
+  </div>
+  <div class="inputArea">
+    <div class="textInput">
+      <div class="text">
+        <div id="textLabel">Plaintext/Ciphertext</div>
+        <textarea id="text"></textarea>
+        <div id="keyLabelNumberOne">Key A</div>
+        <input id="keyNumberOne" type="number" />
+        <div id="keyLabelNumberTwo">Key B</div>
+        <input id="keyNumberTwo" type="number" />
+        <div id="keyLabelText" hidden>Key</div>
+        <input id="keyText" type="text" hidden />
+        <div class="buttons">
+          <button onclick="encipher()">Encrypt</button>
+          <button onclick="decipher()">Decyprt</button>
         </div>
       </div>
     </div>
-    <div class="resultArea">
-      <div id="result">U will see result here!</div>
-    </div>
-    <script src="app.js"></script>
-  </body>
+  </div>
+  <div class="resultArea">
+    <div id="result">U will see result here!</div>
+  </div>
+  <script src="app.js"></script>
+</body>
 </html>
