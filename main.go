@@ -9,6 +9,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/handiism/crypto/algorithm"
+	"github.com/pkg/browser"
 )
 
 //go:embed view/*
@@ -23,7 +24,8 @@ func main() {
 		PathPrefix: "view",
 		Browse:     true,
 	}))
-	log.Fatal(app.Listen(":8000"))
+	go browser.OpenURL("http://127.0.0.1:8000/")
+	go log.Fatal(app.Listen(":8000"))
 }
 
 type Request struct {
