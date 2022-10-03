@@ -1,19 +1,28 @@
 package main
 
 import (
+	"embed"
 	"encoding/json"
 	"log"
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/handiism/crypto/algorithm"
 )
+
+//go:embed view/*
+var view embed.FS
 
 func main() {
 	app := fiber.New()
 	app.Post("/encipher", Encipher())
 	app.Post("/decipher", Decipher())
-	app.Static("/", "./view")
+	app.Use("/", filesystem.New(filesystem.Config{
+		Root:       http.FS(view),
+		PathPrefix: "view",
+		Browse:     true,
+	}))
 	log.Fatal(app.Listen(":8000"))
 }
 
