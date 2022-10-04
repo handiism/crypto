@@ -53,10 +53,6 @@ function otp() {
   document.getElementById("keyLabelText").hidden = false;
   document.getElementById("keyText").hidden = false;
   document.getElementById("keyLabelText").innerHTML = "Key";
-
-  document.getElementById("text").value = document
-    .getElementById("text")
-    .value.replace(" ", "");
 }
 
 function superEncryption() {
@@ -76,10 +72,6 @@ function superEncryption() {
   document.getElementById("keyLabelText").hidden = false;
   document.getElementById("keyText").hidden = false;
   document.getElementById("keyLabelText").innerHTML = "Key Text";
-
-  document.getElementById("text").value = document
-    .getElementById("text")
-    .value.replace(" ", "");
 }
 
 async function encipher() {
