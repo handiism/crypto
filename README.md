@@ -7,7 +7,7 @@ Simple crypto web app made with Go.
 - On Mac
 
   ```bash
-  git clone https://github.com/handiism/crypto
+  git clone --depth 1 https://github.com/handiism/crypto.git
   cd ./crypto
   ./bin/crypto-darwin-x64.dmg
   ```
@@ -15,7 +15,7 @@ Simple crypto web app made with Go.
 - On Linux
 
   ```bash
-  git clone https://github.com/handiism/crypto
+  git clone --depth 1 https://github.com/handiism/crypto.git
   cd ./crypto
   ./bin/crypto-linux-x64.out
   ```
@@ -23,7 +23,7 @@ Simple crypto web app made with Go.
 - On Windows
 
   ```bash
-  git clone https://github.com/handiism/crypto
+  git clone --depth 1 https://github.com/handiism/crypto.git
   cd ./crypto
   ./bin/crypto-windows-x64.exe
   ```
@@ -31,7 +31,7 @@ Simple crypto web app made with Go.
 - Or if you have Go installed
 
   ```bash
-  git clone https://github.com/handiism/crypto
+  git clone --depth 1 https://github.com/handiism/crypto.git
   cd ./crypto
   go run main.go
   ```
