@@ -2,10 +2,12 @@ package algorithm
 
 import "errors"
 
+// OTP contain a key for One Time Pad algorithm
 type OTP struct {
 	key string
 }
 
+// NewOTP construct One Time Pad algorithm
 func NewOTP(key string) *OTP { return &OTP{key} }
 
 // Encrypt encrypts text using a one-time pad
