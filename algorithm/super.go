@@ -12,7 +12,7 @@ type Super struct {
 	Text string
 }
 
-// NewSuper creates an Super. For a one-to-one mapping, a must be
+// NewSuper creates a Super instance. For a one-to-one mapping, a must be
 // invertable, as in gcd(a, 26) == 1.
 func NewSuper(a, b int, text string) (*Super, error) {
 	if _, ok := mod.Inverse(a, 26); !ok {
