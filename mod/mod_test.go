@@ -1,6 +1,10 @@
 package mod
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func TestInverse(t *testing.T) {
 	for i := -50; i < 50; i++ {
@@ -19,4 +23,10 @@ func inverseNaive(a, n int) (int, bool) {
 		}
 	}
 	return 0, false
+}
+
+func TestMod(t *testing.T) {
+	assert.Equal(t, 27%10, Mod(27, 10))
+	assert.Equal(t, 13%10, Mod(13, 5))
+	assert.Equal(t, 1, Mod(10, 3))
 }
